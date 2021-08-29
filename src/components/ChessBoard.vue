@@ -45,7 +45,9 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+
+import { generatePosition } from "@/services/PositionGenerator";
 
 import * as BK from "@/assets/chess_vectors/Chess_kdt45.svg";
 import * as BQ from "@/assets/chess_vectors/Chess_qdt45.svg";
@@ -62,15 +64,11 @@ export default {
     const dndData = ref();
 
     const playerKnightPos = ref({
-      col: 3,
-      row: 5,
+      col: -1000,
+      row: -1000,
     });
 
-    const opponentPieces = ref([
-      { value: "Q", col: 4, row: 7 },
-      { value: "K", col: 6, row: 6 },
-      { value: "P", col: 7, row: 4 },
-    ]);
+    const opponentPieces = ref([]);
 
     function classForCell(row, col) {
       return (row + col) % 2 == 0
@@ -127,7 +125,9 @@ export default {
         (item) => item.col === eventCol && item.row === eventRow
       );
       if (pieceOnSquare) {
-        opponentPieces.value = opponentPieces.value.filter(item => item !== pieceOnSquare);
+        opponentPieces.value = opponentPieces.value.filter(
+          (item) => item !== pieceOnSquare
+        );
         playerKnightPos.value = {
           col: eventCol,
           row: eventRow,
@@ -208,6 +208,13 @@ export default {
     function getYForRow(row) {
       return row * cellSizePx + "px";
     }
+
+    onMounted(async () => {
+      const OPPONENTS_COUNT = 10;
+      const position = await generatePosition(OPPONENTS_COUNT);
+      playerKnightPos.value = position.playerKnight;
+      opponentPieces.value = position.opponentsPieces;
+    });
 
     return {
       rootElt,
