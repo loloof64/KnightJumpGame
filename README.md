@@ -1,24 +1,14 @@
-# knight-jump-game
+# Knight Jumping Game
 
-## Project setup
-```
-yarn install
-```
+A simple game based on chess knight move.
+Try to eat all pieces in a row.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+# Credits
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Pictures
 
-### Lints and fixes files
-```
-yarn lint
-```
+### Flaticon.com
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Using some pictures from flaticon.com.
+
+* The application icon has been designed by Freepik and downloaded at https://www.flaticon.com/free-icon/jumping-horse-with-jockey_32979.
