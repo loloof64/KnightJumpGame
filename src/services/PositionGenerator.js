@@ -39,11 +39,14 @@ function generateValue() {
     return availableValues[parseInt(Math.floor(Math.random() * availableValues.length))];
 }
 
+export const OPPONENTS_MIN_COUNT = 6;
 export const OPPONENTS_MAX_COUNT = 45;
 
 function generateOpponents(playerKnightPosition, opponentsCount) {
   if (opponentsCount > OPPONENTS_MAX_COUNT)
     opponentsCount = OPPONENTS_MAX_COUNT;
+  if (opponentsCount < OPPONENTS_MIN_COUNT)
+    opponentsCount = OPPONENTS_MIN_COUNT;
   let opponents = [];
   let currentCell = playerKnightPosition;
 

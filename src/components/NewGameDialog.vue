@@ -1,0 +1,122 @@
+<template>
+  <div id="backdrop" v-if="isVisible">
+    <div id="content">
+      <h3>Choose the opponents' pieces count :</h3>
+      <input
+        type="number"
+        :min="OPPONENTS_MIN_COUNT"
+        :max="OPPONENTS_MAX_COUNT"
+        v-model="opponentsCount"
+      />
+      <div class="buttons_zone">
+        <button @click="handleCancel" class="cancel">Cancel</button>
+        <button @click="handleConfirm" class="validate">Validate</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import {
+  OPPONENTS_MIN_COUNT,
+  OPPONENTS_MAX_COUNT,
+} from "@/services/PositionGenerator";
+import { ref } from "vue";
+export default {
+  setup() {
+    const isVisible = ref(false);
+    const okClicked = ref(false);
+    const cancelClicked = ref(false);
+    const opponentsCount = ref(OPPONENTS_MIN_COUNT);
+
+    function handleCancel() {
+      cancelClicked.value = true;
+    }
+
+    function handleConfirm() {
+      okClicked.value = true;
+    }
+
+    function show() {
+      okClicked.value = false;
+      cancelClicked.value = false;
+      return new Promise((resolve) => {
+        let checkHandle;
+        function checkClickOnCloseButtons() {
+          if (okClicked.value) {
+            isVisible.value = false;
+            resolve(opponentsCount.value);
+            clearInterval(checkHandle);
+          }
+          if (cancelClicked.value) {
+            isVisible.value = false;
+            resolve();
+            clearInterval(checkHandle);
+          }
+        }
+        checkHandle = setInterval(checkClickOnCloseButtons, 700);
+        isVisible.value = true;
+      });
+    }
+
+    return {
+      opponentsCount,
+      OPPONENTS_MIN_COUNT,
+      OPPONENTS_MAX_COUNT,
+      isVisible,
+      show,
+      handleCancel,
+      handleConfirm,
+    };
+  },
+};
+</script>
+
+<style scoped>
+#backdrop {
+  position: absolute;
+  background-color: #cccccc7a;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#content {
+  position: absolute;
+  background-color: white;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+h3 {
+  font-size: 1.6rem;
+}
+
+.buttons_zone {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+button {
+  border-radius: 5px;
+  color: white;
+  margin: 0 auto;
+  font-size: 1.6rem;
+}
+
+button.validate {
+  background-color: yellowgreen;
+}
+
+button.cancel {
+  background-color: salmon;
+}
+</style>

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 
 import { generatePosition } from "@/services/PositionGenerator";
 
@@ -209,12 +209,11 @@ export default {
       return row * cellSizePx + "px";
     }
 
-    onMounted(async () => {
-      const OPPONENTS_COUNT = 10;
-      const position = await generatePosition(OPPONENTS_COUNT);
+    async function newGame(opponentsCount){
+      const position = await generatePosition(opponentsCount);
       playerKnightPos.value = position.playerKnight;
       opponentPieces.value = position.opponentsPieces;
-    });
+    }
 
     return {
       rootElt,
@@ -231,6 +230,7 @@ export default {
       opponentImageForValue,
       getXForCol,
       getYForRow,
+      newGame,
     };
   },
 };
