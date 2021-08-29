@@ -28,12 +28,31 @@
         width="50"
         height="50"
       />
+      <img
+        class="opponent_piece"
+        v-for="(piece, index) in opponentPieces"
+        :key="index"
+        :src="opponentImageForValue(piece.value)"
+        :style="{
+          left: getXForCol(piece.col),
+          top: getYForRow(piece.row),
+        }"
+        width="50"
+        height="50"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { ref, computed } from "vue";
+
+import * as BK from "@/assets/chess_vectors/Chess_kdt45.svg";
+import * as BQ from "@/assets/chess_vectors/Chess_qdt45.svg";
+import * as BR from "@/assets/chess_vectors/Chess_rdt45.svg";
+import * as BB from "@/assets/chess_vectors/Chess_bdt45.svg";
+import * as BN from "@/assets/chess_vectors/Chess_ndt45.svg";
+import * as BP from "@/assets/chess_vectors/Chess_pdt45.svg";
 
 const cellSizePx = 50;
 
@@ -46,6 +65,12 @@ export default {
       col: 3,
       row: 5,
     });
+
+    const opponentPieces = ref([
+      { value: "Q", col: 4, row: 7 },
+      { value: "K", col: 6, row: 6 },
+      { value: "P", col: 7, row: 4 },
+    ]);
 
     function classForCell(row, col) {
       return (row + col) % 2 == 0
@@ -97,6 +122,21 @@ export default {
       };
     }
 
+    function handleValidMove(eventCol, eventRow) {
+      const pieceOnSquare = opponentPieces.value.find(
+        (item) => item.col === eventCol && item.row === eventRow
+      );
+      if (pieceOnSquare) {
+        opponentPieces.value = opponentPieces.value.filter(item => item !== pieceOnSquare);
+        playerKnightPos.value = {
+          col: eventCol,
+          row: eventRow,
+        };
+      } else {
+        dndData.value = undefined;
+      }
+    }
+
     function handleDragEnd(event) {
       if (!dndData.value) return;
 
@@ -120,10 +160,7 @@ export default {
         const validMove =
           absDeltaCol > 0 && absDeltaRow > 0 && absDeltaRow + absDeltaCol === 3;
         if (validMove) {
-          playerKnightPos.value = {
-            col: evtCol,
-            row: evtRow,
-          };
+          handleValidMove(evtCol, evtRow);
         }
       }
 
@@ -145,6 +182,33 @@ export default {
       return newValue + "px";
     });
 
+    function opponentImageForValue(value) {
+      switch (value.toLowerCase()) {
+        case "k":
+          return BK;
+        case "q":
+          return BQ;
+        case "r":
+          return BR;
+        case "b":
+          return BB;
+        case "n":
+          return BN;
+        case "p":
+          return BP;
+        default:
+          return;
+      }
+    }
+
+    function getXForCol(col) {
+      return col * cellSizePx + "px";
+    }
+
+    function getYForRow(row) {
+      return row * cellSizePx + "px";
+    }
+
     return {
       rootElt,
       isPlayerKnightPos,
@@ -156,6 +220,10 @@ export default {
       dndData,
       playerKnightLeft,
       playerKnightTop,
+      opponentPieces,
+      opponentImageForValue,
+      getXForCol,
+      getYForRow,
     };
   },
 };
@@ -190,6 +258,10 @@ export default {
 }
 
 #player_knight {
+  position: absolute;
+}
+
+.opponent_piece {
   position: absolute;
 }
 </style>
