@@ -132,6 +132,10 @@ export default {
           col: eventCol,
           row: eventRow,
         };
+        const gameSuccess = opponentPieces.value.length === 0;
+        if (gameSuccess) {
+          setTimeout(() => alert("Congratulations."), 200);
+        }
       } else {
         dndData.value = undefined;
       }
