@@ -44,8 +44,8 @@ function generateValue() {
 }
 
 export const OPPONENTS_MIN_COUNT = 6;
-export const OPPONENTS_MAX_COUNT = 45;
-const TIMEOUT = 1000 * 60;
+export const OPPONENTS_MAX_COUNT = 30;
+const TIMEOUT = 1000 * 60 * 2;
 
 function getNextOpponent({ currentCell, playerKnightPosition, opponents }) {
   const nextCell = generateCell();

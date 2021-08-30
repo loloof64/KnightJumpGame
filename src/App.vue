@@ -146,6 +146,7 @@ button.cancel_generation {
   justify-content: space-around;
   align-items: center;
   width: 100%;
+  margin: 10px 0;
 }
 
 #progressBar {
