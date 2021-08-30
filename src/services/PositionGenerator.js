@@ -117,7 +117,7 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
         const { nextOpponent, nextCell } = nextOpponentResult;
         opponents.push(nextOpponent);
         currentCell = nextCell;
-        store.commit("incrementGenerationStepProgress");
+        store.dispatch("incrementGenerationStepProgress");
       }
 
       if (mustBreak) {
@@ -146,8 +146,8 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
 
 export function generatePosition(opponentsCount) {
   return new Promise((resolve, reject) => {
-    store.commit("setGenerationStepsCount", opponentsCount);
-    store.commit("setOpponentPiecesCount", opponentsCount);
+    store.dispatch("setGenerationStepsCount", opponentsCount);
+    store.dispatch("setOpponentPiecesCount", opponentsCount);
 
     const playerKnightPosition = generateCell();
     generateOpponents(playerKnightPosition, opponentsCount)
@@ -155,7 +155,7 @@ export function generatePosition(opponentsCount) {
         if (opponentsPieces === "timeout" || opponentsPieces === "cancelled")
           reject(opponentsPieces);
 
-        store.commit("resetCancelGenerationFlag");
+        store.dispatch("resetCancelGenerationFlag");
 
         resolve({
           playerKnight: playerKnightPosition,
@@ -163,7 +163,7 @@ export function generatePosition(opponentsCount) {
         });
       })
       .catch((err) => {
-        store.commit("resetCancelGenerationFlag");
+        store.dispatch("resetCancelGenerationFlag");
 
         console.error(err);
         reject();

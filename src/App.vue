@@ -62,7 +62,7 @@ export default {
     }
 
     function cancelGameGeneration() {
-      store.commit("cancelGeneration");
+      store.dispatch("cancelGeneration");
     }
 
     const generationSteps = ref(store.state.generationStepsCount);
