@@ -94,6 +94,7 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
         const {nextOpponent, nextCell} = nextOpponentResult;
         opponents.push(nextOpponent);
         currentCell = nextCell;
+        store.commit('incrementGenerationStepProgress');
       }
 
       if (mustBreak) {
@@ -117,6 +118,8 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
 
 export function generatePosition(opponentsCount) {
   return new Promise((resolve, reject) => {
+    store.commit('setGenerationStepsCount', opponentsCount);
+
     const playerKnightPosition = generateCell();
     generateOpponents(playerKnightPosition, opponentsCount).then(
       (opponentsPieces) => {

@@ -12,6 +12,11 @@
       </button>
     </div>
     <div class="generation_zone" v-if="isGeneratingGame">
+      <progress
+        id="progressBar"
+        :max="generationSteps"
+        :value="generationStepProgress"
+      ></progress>
       <button @click="cancelGameGeneration" class="cancel_generation">
         {{ t("main_page.cancel_generation") }}
       </button>
@@ -52,8 +57,16 @@ export default {
     }
 
     function cancelGameGeneration() {
-      store.commit('cancelGeneration');
+      store.commit("cancelGeneration");
     }
+
+    const generationSteps = ref(store.state.generationStepsCount);
+    const generationStepProgress = ref(store.state.generationStepProgress);
+
+    store.subscribe((mutation, state) => {
+      generationSteps.value = state.generationStepsCount;
+      generationStepProgress.value = state.generationStepProgress;
+    });
 
     return {
       newGameDialog,
@@ -63,6 +76,8 @@ export default {
       board,
       isGeneratingGame,
       cancelGameGeneration,
+      generationSteps,
+      generationStepProgress,
       t,
     };
   },
@@ -131,5 +146,9 @@ button.cancel_generation {
   justify-content: space-around;
   align-items: center;
   width: 100%;
+}
+
+#progressBar {
+  font-size: 1.6rem;
 }
 </style>
