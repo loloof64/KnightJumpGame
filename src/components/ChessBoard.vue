@@ -20,7 +20,7 @@
     <div class="pieces_layer">
       <img
         id="player_knight"
-        src="@/assets/chess_vectors/Chess_nlt45.svg"
+        :src="playerImage"
         :style="{
           left: playerKnightLeft,
           top: playerKnightTop,
@@ -49,6 +49,13 @@ import { ref, computed } from "vue";
 
 import { generatePosition } from "@/services/PositionGenerator";
 
+import * as WK from "@/assets/chess_vectors/Chess_klt45.svg";
+import * as WQ from "@/assets/chess_vectors/Chess_qlt45.svg";
+import * as WR from "@/assets/chess_vectors/Chess_rlt45.svg";
+import * as WB from "@/assets/chess_vectors/Chess_blt45.svg";
+import * as WN from "@/assets/chess_vectors/Chess_nlt45.svg";
+import * as WP from "@/assets/chess_vectors/Chess_plt45.svg";
+
 import * as BK from "@/assets/chess_vectors/Chess_kdt45.svg";
 import * as BQ from "@/assets/chess_vectors/Chess_qdt45.svg";
 import * as BR from "@/assets/chess_vectors/Chess_rdt45.svg";
@@ -62,6 +69,8 @@ export default {
   setup() {
     const rootElt = ref();
     const dndData = ref();
+
+    const playerIsWhite = ref(true);
 
     const playerKnightPos = ref({
       col: -1000,
@@ -104,8 +113,10 @@ export default {
       possibilities = possibilities.filter(
         (item) => item.x >= 0 && item.x <= 7 && item.y >= 0 && item.y <= 7
       );
-      possibilities = possibilities.filter(
-        item => opponentPieces.value.find(opponent => opponent.col === item.x && opponent.row === item.y)
+      possibilities = possibilities.filter((item) =>
+        opponentPieces.value.find(
+          (opponent) => opponent.col === item.x && opponent.row === item.y
+        )
       );
       return possibilities.length === 0;
     }
@@ -225,17 +236,17 @@ export default {
     function opponentImageForValue(value) {
       switch (value.toLowerCase()) {
         case "k":
-          return BK;
+          return playerIsWhite.value ? BK : WK;
         case "q":
-          return BQ;
+          return playerIsWhite.value ? BQ : WQ;
         case "r":
-          return BR;
+          return playerIsWhite.value ? BR : WR;
         case "b":
-          return BB;
+          return playerIsWhite.value ? BB : WB;
         case "n":
-          return BN;
+          return playerIsWhite.value ? BN : WN;
         case "p":
-          return BP;
+          return playerIsWhite.value ? BP : WP;
         default:
           return;
       }
@@ -250,10 +261,13 @@ export default {
     }
 
     async function newGame(opponentsCount) {
+      playerIsWhite.value = parseInt(Math.random() * 2) > 0;
       const position = await generatePosition(opponentsCount);
       playerKnightPos.value = position.playerKnight;
       opponentPieces.value = position.opponentsPieces;
     }
+
+    const playerImage = computed(() => playerIsWhite.value ? WN : BN);
 
     return {
       rootElt,
@@ -271,6 +285,7 @@ export default {
       getXForCol,
       getYForRow,
       newGame,
+      playerImage,
     };
   },
 };
