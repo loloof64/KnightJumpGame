@@ -11,29 +11,36 @@ function generateCell() {
   return { col, row };
 }
 
-function cellOccupied(cell, playerKnightPosition, opponents) {
-  if (
-    cell.col === playerKnightPosition.col &&
-    cell.row === playerKnightPosition.row
-  ) {
-    return true;
-  }
-  if (
-    opponents.find(
-      (singleOpponent) =>
-        cell.col === singleOpponent.col && cell.row === singleOpponent.row
-    )
-  ) {
-    return true;
-  }
-  return false;
-}
+function getFreeNeighbourCells({cell, playerKnightPosition, opponentPieces}) {
+  const directions = [
+    { dx: -1, dy: -2 },
+    { dx: -1, dy: +2 },
+    { dx: +1, dy: -2 },
+    { dx: +1, dy: +2 },
+    { dx: -2, dy: -1 },
+    { dx: -2, dy: +1 },
+    { dx: +2, dy: -1 },
+    { dx: +2, dy: +1 },
+  ];
 
-function cellsAreConnectedBySingleKnightJump(cell1, cell2) {
-  const absDeltaCol = Math.abs(cell1.col - cell2.col);
-  const absDeltaRow = Math.abs(cell1.row - cell2.row);
+  let possibilities = directions.map((item) => {
+    return {
+      col: item.dx + cell.col,
+      row: item.dy + cell.row,
+    };
+  });
 
-  return absDeltaCol > 0 && absDeltaRow > 0 && absDeltaCol + absDeltaRow === 3;
+  possibilities = possibilities.filter(
+    (item) => item.col >= 0 && item.col <= 7 && item.row >= 0 && item.row <= 7
+  );
+
+  possibilities = possibilities.filter((item) =>
+    !(opponentPieces.find(
+      (opponent) => opponent.col === item.col && opponent.row === item.row
+    )) && (playerKnightPosition.col !== item.col || playerKnightPosition.row !== item.row)
+  );
+
+  return possibilities;
 }
 
 function generateValue() {
@@ -47,14 +54,15 @@ export const OPPONENTS_MIN_COUNT = 6;
 export const OPPONENTS_MAX_COUNT = 30;
 const TIMEOUT = 1000 * 60 * 2;
 
-function getNextOpponent({ currentCell, playerKnightPosition, opponents }) {
-  const nextCell = generateCell();
-  if (!cellsAreConnectedBySingleKnightJump(currentCell, nextCell)) {
+function getNextOpponent({ currentCell, playerKnightPosition, opponentPieces }) {
+  const freeNeighbours = getFreeNeighbourCells({cell: currentCell, playerKnightPosition, opponentPieces});
+  if (freeNeighbours.length === 0) {
     return;
   }
-  if (cellOccupied(nextCell, playerKnightPosition, opponents)) {
-    return;
-  }
+  const nextCellIndex = parseInt(
+    Math.floor(Math.random() * freeNeighbours.length)
+  );
+  const nextCell = freeNeighbours[nextCellIndex];
   const value = generateValue();
   const nextOpponent = { value, ...nextCell };
   return { nextOpponent, nextCell };
@@ -92,7 +100,7 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
       const nextOpponentResult = getNextOpponent({
         currentCell,
         playerKnightPosition,
-        opponents,
+        opponentPieces : opponents,
       });
       if (nextOpponentResult) {
         const { nextOpponent, nextCell } = nextOpponentResult;
