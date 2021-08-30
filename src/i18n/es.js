@@ -5,6 +5,7 @@ export default {
   },
   main_page: {
     new_game_button: "Nueva partida",
+    game_rules_button: "Normas",
   },
   game_messages: {
     congratulation_alert: "Felicidades.",
@@ -12,5 +13,11 @@ export default {
   },
   new_game_dialog: {
     title: "Elige el número de piezas del oponente :",
+  },
+  games_rules: {
+    title: "Normas",
+    content_1:
+      "El objetivo del juego es intentar comerse todas las piezas con tu caballero.",
+    content_2: "Ganas si no queda más pieza del oponente.",
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div id="backdrop" v-if="isVisible">
     <div id="content">
-      <h3>{{ t(('new_game_dialog.title')) }}</h3>
+      <h3>{{ t("new_game_dialog.title") }}</h3>
       <input
         type="number"
         :min="OPPONENTS_MIN_COUNT"
@@ -9,8 +9,12 @@
         v-model="opponentsCount"
       />
       <div class="buttons_zone">
-        <button @click="handleCancel" class="cancel">{{ t('dialogs_generalities.cancel_button')}}</button>
-        <button @click="handleConfirm" class="validate">{{ t('dialogs_generalities.validate_button')}}</button>
+        <button @click="handleCancel" class="cancel">
+          {{ t("dialogs_generalities.cancel_button") }}
+        </button>
+        <button @click="handleConfirm" class="validate">
+          {{ t("dialogs_generalities.validate_button") }}
+        </button>
       </div>
     </div>
   </div>
@@ -107,7 +111,7 @@ h3 {
 .buttons_zone {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: stretch;
 }
 
 button {
