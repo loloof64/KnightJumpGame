@@ -8,6 +8,7 @@ export default {
     game_rules_button: "Règles",
     cancel_generation: "Annuler la génération du jeu",
     opponent_pieces: "ennemis",
+    possible_solution: "(Solution possible)",
   },
   game_messages: {
     congratulation_alert: "Félicitations.",

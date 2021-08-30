@@ -26,18 +26,21 @@
       </button>
     </div>
     <div class="solution_controls" v-if="solutionControlsVisible">
-      <button @click="goPreviousSolution">&lt;</button>
-      <input
-        ref="slider"
-        type="range"
-        class="slider"
-        step="1"
-        min="0"
-        :max="solutionSteps"
-        :value="answerIndex"
-        @change="handleSliderChanged"
-      />
-      <button @click="goNextSolution">&gt;</button>
+      <div class="header">{{ t("main_page.possible_solution") }}</div>
+      <div class="content">
+        <button @click="goPreviousSolution">&lt;</button>
+        <input
+          ref="slider"
+          type="range"
+          class="slider"
+          step="1"
+          min="0"
+          :max="solutionSteps"
+          :value="answerIndex"
+          @change="handleSliderChanged"
+        />
+        <button @click="goNextSolution">&gt;</button>
+      </div>
     </div>
   </div>
 </template>
@@ -179,7 +182,7 @@ export default {
 }
 
 #board {
-  margin: 10px auto;
+  margin: 0.8rem auto;
 }
 
 body,
@@ -188,7 +191,7 @@ html {
 }
 
 button {
-  border-radius: 5px;
+  border-radius: 0.4rem;
   color: white;
   font-size: 1.6rem;
 }
@@ -223,7 +226,7 @@ button.cancel_generation {
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  margin: 10px 0;
+  margin: 0.8rem 0;
 }
 
 .progressBar,
@@ -233,14 +236,25 @@ button.cancel_generation {
 
 .solution_controls {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 10px 0;
+  margin: 0.8rem 0;
 }
 
 .solution_controls button {
   background-color: greenyellow;
+}
+
+.solution_controls .header {
+  font-size: 1.6rem;
+}
+
+.solution_controls .content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 </style>

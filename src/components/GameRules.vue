@@ -79,10 +79,10 @@ export default {
 }
 
 button {
-  border-radius: 5px;
+  border-radius: 0.4rem;
   color: white;
   font-size: 1.6rem;
-  margin: 10px 0;
+  margin: 0.8rem 0;
 }
 
 button.validate {
@@ -101,7 +101,7 @@ h2 {
 p {
     color: saddlebrown;
     font-size: 1.6rem;
-    margin: 5px 10px;
+    margin: 0.4rem 0.8rem;
     text-align: start;
 }
 </style>
