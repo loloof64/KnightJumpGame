@@ -1,3 +1,5 @@
+import store from '../store';
+
 function generateSingleCoordinate() {
   return parseInt(Math.floor(Math.random() * 8));
 }
@@ -43,7 +45,7 @@ function generateValue() {
 
 export const OPPONENTS_MIN_COUNT = 6;
 export const OPPONENTS_MAX_COUNT = 45;
-const TIMEOUT = 1000 * 30;
+const TIMEOUT = 1000 * 60;
 
 function getNextOpponent({ currentCell, playerKnightPosition, opponents }) {
   const nextCell = generateCell();
@@ -73,7 +75,14 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
       mustBreak = true;
     }
 
+    function checkCancelRequest() {
+      if (store.state.generationCancelRequest) {
+        mustBreak = true;
+      }
+    }
+
     const breakTimeoutHandle = setTimeout(activateMustBreakFlag, TIMEOUT);
+    const checkCancelRequestIntervalHandle = setInterval(checkCancelRequest, 30);
 
     function iteration() {
       const nextOpponentResult = getNextOpponent({
@@ -89,10 +98,12 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
 
       if (mustBreak) {
         clearTimeout(breakTimeoutHandle);
+        clearInterval(checkCancelRequestIntervalHandle);
         resolve();
         return;
       } else if (opponents.length === opponentsCount) {
         clearTimeout(breakTimeoutHandle);
+        clearInterval(checkCancelRequestIntervalHandle);
         resolve(opponents);
         return;
       } else {
@@ -112,12 +123,16 @@ export function generatePosition(opponentsCount) {
 
         if (!opponentsPieces) reject();
 
+        store.commit('resetCancelGenerationFlag');
+
         resolve({
           playerKnight: playerKnightPosition,
           opponentsPieces,
         });
       }
     ).catch((err) => {
+      store.commit('resetCancelGenerationFlag');
+
       console.error(err);
       reject()
     });

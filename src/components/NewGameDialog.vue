@@ -49,20 +49,20 @@ export default {
       okClicked.value = false;
       cancelClicked.value = false;
       return new Promise((resolve) => {
-        let checkHandle;
+        let buttonClickcheckHandle;
         function checkClickOnCloseButtons() {
           if (okClicked.value) {
             isVisible.value = false;
             resolve(opponentsCount.value);
-            clearInterval(checkHandle);
+            clearInterval(buttonClickcheckHandle);
           }
           if (cancelClicked.value) {
             isVisible.value = false;
             resolve();
-            clearInterval(checkHandle);
+            clearInterval(buttonClickcheckHandle);
           }
         }
-        checkHandle = setInterval(checkClickOnCloseButtons, 700);
+        buttonClickcheckHandle = setInterval(checkClickOnCloseButtons, 700);
         isVisible.value = true;
       });
     }

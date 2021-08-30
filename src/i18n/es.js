@@ -6,6 +6,7 @@ export default {
   main_page: {
     new_game_button: "Nueva partida",
     game_rules_button: "Normas",
+    cancel_generation: "Cancelar generación de juegos",
   },
   game_messages: {
     congratulation_alert: "Felicidades.",
