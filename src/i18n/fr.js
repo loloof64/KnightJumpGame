@@ -10,6 +10,7 @@ export default {
   game_messages: {
     congratulation_alert: "Félicitations.",
     game_lost_alert: "Perdu : plus de coup disponible.",
+    generation_failure: "Echec de génération du jeu : vous devriez essayer avec moins de pièces adverses.",
   },
   new_game_dialog: {
     title: "Veuillez choisir le nombre de pièces adverses :",

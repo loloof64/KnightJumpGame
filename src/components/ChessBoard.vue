@@ -261,10 +261,14 @@ export default {
     }
 
     async function newGame(opponentsCount) {
-      playerIsWhite.value = parseInt(Math.random() * 2) > 0;
-      const position = await generatePosition(opponentsCount);
-      playerKnightPos.value = position.playerKnight;
-      opponentPieces.value = position.opponentsPieces;
+      try {
+        playerIsWhite.value = parseInt(Math.random() * 2) > 0;
+        const position = await generatePosition(opponentsCount);
+        playerKnightPos.value = position.playerKnight;
+        opponentPieces.value = position.opponentsPieces;
+      } catch {
+        alert(t('game_messages.generation_failure'));
+      }
     }
 
     const playerImage = computed(() => (playerIsWhite.value ? WN : BN));

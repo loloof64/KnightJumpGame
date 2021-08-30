@@ -10,6 +10,7 @@ export default {
   game_messages: {
     congratulation_alert: "Congratulations.",
     game_lost_alert: "Game lost : no more move available.",
+    generation_failure: "Failed to generate game : you should retry with less opponent pieces.",
   },
   new_game_dialog: {
     title: "Choose the opponent's pieces count :",
