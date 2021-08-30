@@ -82,6 +82,34 @@ export default {
       );
     }
 
+    function checkGameFailure() {
+      const directions = [
+        { x: -1, y: -2 },
+        { x: -1, y: +2 },
+        { x: +1, y: -2 },
+        { x: +1, y: +2 },
+        { x: -2, y: -1 },
+        { x: -2, y: +1 },
+        { x: +2, y: -1 },
+        { x: +2, y: +1 },
+      ];
+
+      let possibilities = directions.map((item) => {
+        return {
+          x: item.x + playerKnightPos.value.col,
+          y: item.y + playerKnightPos.value.row,
+        };
+      });
+
+      possibilities = possibilities.filter(
+        (item) => item.x >= 0 && item.x <= 7 && item.y >= 0 && item.y <= 7
+      );
+      possibilities = possibilities.filter(
+        item => opponentPieces.value.find(opponent => opponent.col === item.x && opponent.row === item.y)
+      );
+      return possibilities.length === 0;
+    }
+
     function handleDragStart(event) {
       const { clientX, clientY } = event;
       const rootElementRect = rootElt.value.getBoundingClientRect();
@@ -135,6 +163,14 @@ export default {
         const gameSuccess = opponentPieces.value.length === 0;
         if (gameSuccess) {
           setTimeout(() => alert("Congratulations."), 200);
+        } else {
+          const failure = checkGameFailure();
+          if (failure) {
+            setTimeout(
+              () => alert("No more move possible : you've lost."),
+              200
+            );
+          }
         }
       } else {
         dndData.value = undefined;
@@ -213,7 +249,7 @@ export default {
       return row * cellSizePx + "px";
     }
 
-    async function newGame(opponentsCount){
+    async function newGame(opponentsCount) {
       const position = await generatePosition(opponentsCount);
       playerKnightPos.value = position.playerKnight;
       opponentPieces.value = position.opponentsPieces;
