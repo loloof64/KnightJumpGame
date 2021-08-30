@@ -46,6 +46,7 @@
 
 <script>
 import { ref, computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { generatePosition } from "@/services/PositionGenerator";
 
@@ -69,6 +70,8 @@ export default {
   setup() {
     const rootElt = ref();
     const dndData = ref();
+
+    const { t } = useI18n();
 
     const playerIsWhite = ref(true);
 
@@ -173,14 +176,11 @@ export default {
         };
         const gameSuccess = opponentPieces.value.length === 0;
         if (gameSuccess) {
-          setTimeout(() => alert("Congratulations."), 200);
+          setTimeout(() => alert(t("game_messages.congratulation_alert")), 200);
         } else {
           const failure = checkGameFailure();
           if (failure) {
-            setTimeout(
-              () => alert("No more move possible : you've lost."),
-              200
-            );
+            setTimeout(() => alert(t("game_messages.game_lost_alert")), 200);
           }
         }
       } else {
@@ -267,7 +267,7 @@ export default {
       opponentPieces.value = position.opponentsPieces;
     }
 
-    const playerImage = computed(() => playerIsWhite.value ? WN : BN);
+    const playerImage = computed(() => (playerIsWhite.value ? WN : BN));
 
     return {
       rootElt,

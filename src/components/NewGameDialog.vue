@@ -1,7 +1,7 @@
 <template>
   <div id="backdrop" v-if="isVisible">
     <div id="content">
-      <h3>Choose the opponents' pieces count :</h3>
+      <h3>{{ t(('new_game_dialog.title')) }}</h3>
       <input
         type="number"
         :min="OPPONENTS_MIN_COUNT"
@@ -9,8 +9,8 @@
         v-model="opponentsCount"
       />
       <div class="buttons_zone">
-        <button @click="handleCancel" class="cancel">Cancel</button>
-        <button @click="handleConfirm" class="validate">Validate</button>
+        <button @click="handleCancel" class="cancel">{{ t('dialogs_generalities.cancel_button')}}</button>
+        <button @click="handleConfirm" class="validate">{{ t('dialogs_generalities.validate_button')}}</button>
       </div>
     </div>
   </div>
@@ -22,12 +22,16 @@ import {
   OPPONENTS_MAX_COUNT,
 } from "@/services/PositionGenerator";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+
 export default {
   setup() {
     const isVisible = ref(false);
     const okClicked = ref(false);
     const cancelClicked = ref(false);
     const opponentsCount = ref(OPPONENTS_MIN_COUNT);
+
+    const { t } = useI18n();
 
     function handleCancel() {
       cancelClicked.value = true;
@@ -67,6 +71,7 @@ export default {
       show,
       handleCancel,
       handleConfirm,
+      t,
     };
   },
 };
