@@ -40,7 +40,7 @@ function generateValue() {
 }
 
 export const OPPONENTS_MIN_COUNT = 6;
-export const OPPONENTS_MAX_COUNT = 45;
+export const OPPONENTS_MAX_COUNT = 30;
 
 function generateOpponents(playerKnightPosition, opponentsCount) {
   if (opponentsCount > OPPONENTS_MAX_COUNT)
