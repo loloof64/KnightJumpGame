@@ -95,8 +95,8 @@ export default {
   width: 80%;
   height: 80%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-evenly;
+  align-items: stretch;
   flex-direction: column;
 }
 
@@ -123,5 +123,11 @@ button.validate {
 
 button.cancel {
   background-color: salmon;
+}
+
+input[type="number"] {
+  font-size: 1.6rem;
+  width: 10%;
+  margin: 0 auto;
 }
 </style>
