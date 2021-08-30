@@ -24,11 +24,15 @@
         {{ t("main_page.cancel_generation") }}
       </button>
     </div>
+    <div class="solution_controls" v-if="solutionControlsVisible">
+      <button @click="goPreviousSolution">&lt;</button>
+      <button @click="goNextSolution">&gt;</button>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 
@@ -47,6 +51,7 @@ export default {
     const store = useStore();
 
     const opponentPiecesCount = ref(store.state.opponentPiecesCount);
+    const answerIndex = ref(0);
 
     async function showNewGameDialog() {
       const opponentPiecesCount = await newGameDialog.value.show();
@@ -67,12 +72,38 @@ export default {
 
     const generationSteps = ref(store.state.generationStepsCount);
     const generationStepProgress = ref(store.state.generationStepProgress);
+    const gameActive = ref(store.state.gameActive);
+    const answerData = ref(store.state.answerData);
+
+    const solutionControlsVisible = computed(() => answerData.value && !gameActive.value);
+
+    watch(answerIndex, () => board.value.updatePosition());
 
     store.subscribe((mutation, state) => {
       generationSteps.value = state.generationStepsCount;
       generationStepProgress.value = state.generationStepProgress;
       opponentPiecesCount.value = state.opponentPiecesCount;
+      gameActive.value = state.gameActive;
+      answerData.value = state.answerData;
+
+      if (mutation.type === "setAnswerIndex") {
+        answerIndex.value = state.answerIndex;
+      }
     });
+
+    function goPreviousSolution() {
+      if (gameActive.value) return;
+      if (answerIndex.value === 0) return;
+
+      store.dispatch('setAnswerIndex', answerIndex.value - 1);
+    }
+
+    function goNextSolution() {
+      if (gameActive.value) return;
+      if (answerIndex.value >= store.state.opponentPiecesCount) return;
+
+      store.dispatch('setAnswerIndex', answerIndex.value + 1);
+    }
 
     return {
       newGameDialog,
@@ -85,6 +116,11 @@ export default {
       generationSteps,
       generationStepProgress,
       opponentPiecesCount,
+      gameActive,
+      answerData,
+      goPreviousSolution,
+      goNextSolution,
+      solutionControlsVisible,
       t,
     };
   },
@@ -162,5 +198,18 @@ button.cancel_generation {
 
 #progressBar {
   font-size: 1.6rem;
+}
+
+.solution_controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.solution_controls button {
+  background-color: greenyellow;
 }
 </style>

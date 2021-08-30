@@ -144,6 +144,26 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
   });
 }
 
+function generateAnswerDataFromGameData(gameData) {
+  let answer = [];
+  answer.push(gameData);
+
+  let playerPos = {...gameData.playerKnight};
+  let opponents = [...gameData.opponentPieces];
+
+  for (const currentOpponent of gameData.opponentPieces) {
+    playerPos = { col: currentOpponent.col, row: currentOpponent.row };
+    opponents.shift();
+
+    answer.push({
+      playerKnight: playerPos,
+      opponentPieces: [...opponents],
+    });
+  }
+
+  return answer;
+}
+
 export function generatePosition(opponentsCount) {
   return new Promise((resolve, reject) => {
     store.dispatch("setGenerationStepsCount", opponentsCount);
@@ -151,16 +171,22 @@ export function generatePosition(opponentsCount) {
 
     const playerKnightPosition = generateCell();
     generateOpponents(playerKnightPosition, opponentsCount)
-      .then((opponentsPieces) => {
-        if (opponentsPieces === "timeout" || opponentsPieces === "cancelled")
-          reject(opponentsPieces);
+      .then((opponentPieces) => {
+        if (opponentPieces === "timeout" || opponentPieces === "cancelled")
+          reject(opponentPieces);
 
         store.dispatch("resetCancelGenerationFlag");
 
-        resolve({
+        const gameData = {
           playerKnight: playerKnightPosition,
-          opponentsPieces,
-        });
+          opponentPieces,
+        };
+
+        const answerData = generateAnswerDataFromGameData(gameData);
+
+        store.dispatch("setAnswerData", answerData);
+
+        resolve(gameData);
       })
       .catch((err) => {
         store.dispatch("resetCancelGenerationFlag");

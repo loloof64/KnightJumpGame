@@ -8,6 +8,8 @@ const storeDefinition = {
       generationStepProgress: 0,
       opponentPiecesCount: 0,
       answerData: undefined,
+      gameActive: false,
+      answerIndex: 0,
     };
   },
   mutations: {
@@ -29,6 +31,15 @@ const storeDefinition = {
         state.opponentPiecesCount = payload;
       }
     },
+    setAnswerData(state, payload) {
+      state.answerData = payload;
+    },
+    setGameActive(state, payload) {
+      state.gameActive = payload;
+    },
+    setAnswerIndex(state, payload) {
+      state.answerIndex = payload;
+    }
   },
   actions: {
     cancelGeneration(context) {
@@ -45,6 +56,15 @@ const storeDefinition = {
     },
     setOpponentPiecesCount(context, payload) {
       context.commit("setOpponentPiecesCount", payload);
+    },
+    setAnswerData(context, payload) {
+      context.commit("setAnswerData", payload);
+    },
+    setGameActive(context, payload) {
+      context.commit('setGameActive', payload);
+    },
+    setAnswerIndex(context, payload) {
+      context.commit('setAnswerIndex', payload);
     },
   },
 };

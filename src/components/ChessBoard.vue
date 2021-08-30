@@ -47,6 +47,7 @@
 <script>
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { useStore } from "vuex";
 
 import { generatePosition } from "@/services/PositionGenerator";
 
@@ -72,6 +73,9 @@ export default {
     const dndData = ref();
 
     const { t } = useI18n();
+
+    const store = useStore();
+    const gameActive = ref(false);
 
     const playerIsWhite = ref(true);
 
@@ -125,6 +129,7 @@ export default {
     }
 
     function handleDragStart(event) {
+      if (!gameActive.value) return;
       const { clientX, clientY } = event;
       const rootElementRect = rootElt.value.getBoundingClientRect();
       const rootEltX = rootElementRect.left;
@@ -147,6 +152,7 @@ export default {
     }
 
     function handleDrag(event) {
+      if (!gameActive.value) return;
       if (!dndData.value) return;
 
       const { clientX, clientY } = event;
@@ -176,10 +182,14 @@ export default {
         };
         const gameSuccess = opponentPieces.value.length === 0;
         if (gameSuccess) {
+          store.dispatch("setGameActive", false);
+          store.dispatch("setAnswerIndex", 0);
           setTimeout(() => alert(t("game_messages.congratulation_alert")), 200);
         } else {
           const failure = checkGameFailure();
           if (failure) {
+            store.dispatch("setGameActive", false);
+            store.dispatch("setAnswerIndex", 0);
             setTimeout(() => alert(t("game_messages.game_lost_alert")), 200);
           }
         }
@@ -189,6 +199,7 @@ export default {
     }
 
     function handleDragEnd(event) {
+      if (!gameActive.value) return;
       if (!dndData.value) return;
 
       const { clientX, clientY } = event;
@@ -265,7 +276,8 @@ export default {
         playerIsWhite.value = parseInt(Math.random() * 2) > 0;
         const position = await generatePosition(opponentsCount);
         playerKnightPos.value = position.playerKnight;
-        opponentPieces.value = position.opponentsPieces;
+        opponentPieces.value = position.opponentPieces;
+        store.dispatch("setGameActive", true);
       } catch (err) {
         if (err === "timeout") {
           alert(t("game_messages.generation_failure"));
@@ -273,7 +285,28 @@ export default {
       }
     }
 
+    function updatePosition() {
+      const index = store.state.answerIndex;
+      const answerData = store.state.answerData;
+
+      const currentAnswerData = answerData[index];
+
+      const { playerKnight: playerPos, opponentPieces: opponents } =
+        currentAnswerData;
+
+      playerKnightPos.value = playerPos;
+      opponentPieces.value = opponents;
+    }
+
     const playerImage = computed(() => (playerIsWhite.value ? WN : BN));
+
+    store.subscribe((mutation, state) => {
+      gameActive.value = state.gameActive;
+      if (mutation.type === "setAnswerIndex") {
+        if (gameActive.value) return;
+        updatePosition();
+      }
+    });
 
     return {
       rootElt,
@@ -292,6 +325,8 @@ export default {
       getYForRow,
       newGame,
       playerImage,
+      gameActive,
+      updatePosition,
     };
   },
 };
