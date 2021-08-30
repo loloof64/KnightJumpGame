@@ -39,7 +39,7 @@ const storeDefinition = {
     },
     setAnswerIndex(state, payload) {
       state.answerIndex = payload;
-    }
+    },
   },
   actions: {
     cancelGeneration(context) {
@@ -61,10 +61,10 @@ const storeDefinition = {
       context.commit("setAnswerData", payload);
     },
     setGameActive(context, payload) {
-      context.commit('setGameActive', payload);
+      context.commit("setGameActive", payload);
     },
     setAnswerIndex(context, payload) {
-      context.commit('setAnswerIndex', payload);
+      context.commit("setAnswerIndex", payload);
     },
   },
 };

@@ -16,7 +16,8 @@
     </div>
     <div class="generation_zone" v-if="isGeneratingGame">
       <progress
-        id="progressBar"
+        class="progressBar"
+        min="0"
         :max="generationSteps"
         :value="generationStepProgress"
       ></progress>
@@ -26,6 +27,16 @@
     </div>
     <div class="solution_controls" v-if="solutionControlsVisible">
       <button @click="goPreviousSolution">&lt;</button>
+      <input
+        ref="slider"
+        type="range"
+        class="slider"
+        step="1"
+        min="0"
+        :max="solutionSteps"
+        :value="answerIndex"
+        @change="handleSliderChanged"
+      />
       <button @click="goNextSolution">&gt;</button>
     </div>
   </div>
@@ -46,6 +57,7 @@ export default {
     const newGameDialog = ref();
     const gameRulesDialog = ref();
     const isGeneratingGame = ref(false);
+    const slider = ref();
     const board = ref();
     const { t } = useI18n();
     const store = useStore();
@@ -75,6 +87,8 @@ export default {
     const gameActive = ref(store.state.gameActive);
     const answerData = ref(store.state.answerData);
 
+    const solutionSteps = ref(0);
+
     const solutionControlsVisible = computed(
       () => answerData.value && !gameActive.value
     );
@@ -93,6 +107,7 @@ export default {
         gameActive.value = state.gameActive;
       } else if (mutation.type === "setAnswerData") {
         answerData.value = state.answerData;
+        solutionSteps.value = state.answerData.length - 1;
       } else if (mutation.type === "setAnswerIndex") {
         answerIndex.value = state.answerIndex;
       }
@@ -112,6 +127,10 @@ export default {
       store.dispatch("setAnswerIndex", answerIndex.value + 1);
     }
 
+    function handleSliderChanged() {
+      store.dispatch("setAnswerIndex", parseInt(slider.value.value));
+    }
+
     return {
       newGameDialog,
       gameRulesDialog,
@@ -128,6 +147,10 @@ export default {
       goPreviousSolution,
       goNextSolution,
       solutionControlsVisible,
+      solutionSteps,
+      answerIndex,
+      handleSliderChanged,
+      slider,
       t,
     };
   },
@@ -203,7 +226,8 @@ button.cancel_generation {
   margin: 10px 0;
 }
 
-#progressBar {
+.progressBar,
+.slider {
   font-size: 1.6rem;
 }
 

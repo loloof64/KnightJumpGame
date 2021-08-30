@@ -301,10 +301,12 @@ export default {
     const playerImage = computed(() => (playerIsWhite.value ? WN : BN));
 
     store.subscribe((mutation, state) => {
+      
       if (mutation.type === "setAnswerIndex") {
         if (gameActive.value) return;
         updatePosition();
-      } else if (mutation.type === "setGameActive") {
+      }
+      else if (mutation.type === "setGameActive") {
         gameActive.value = state.gameActive;
       }
     });
