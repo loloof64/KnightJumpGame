@@ -266,8 +266,10 @@ export default {
         const position = await generatePosition(opponentsCount);
         playerKnightPos.value = position.playerKnight;
         opponentPieces.value = position.opponentsPieces;
-      } catch {
-        alert(t('game_messages.generation_failure'));
+      } catch (err) {
+        if (err === "timeout") {
+          alert(t("game_messages.generation_failure"));
+        }
       }
     }
 

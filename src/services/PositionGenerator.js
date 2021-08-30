@@ -1,4 +1,4 @@
-import store from '../store';
+import store from "../store";
 
 function generateSingleCoordinate() {
   return parseInt(Math.floor(Math.random() * 8));
@@ -70,6 +70,7 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
     let currentCell = playerKnightPosition;
 
     let mustBreak = false;
+    let cancelRequest = false;
 
     function activateMustBreakFlag() {
       mustBreak = true;
@@ -77,12 +78,15 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
 
     function checkCancelRequest() {
       if (store.state.generationCancelRequest) {
-        mustBreak = true;
+        cancelRequest = true;
       }
     }
 
     const breakTimeoutHandle = setTimeout(activateMustBreakFlag, TIMEOUT);
-    const checkCancelRequestIntervalHandle = setInterval(checkCancelRequest, 30);
+    const checkCancelRequestIntervalHandle = setInterval(
+      checkCancelRequest,
+      30
+    );
 
     function iteration() {
       const nextOpponentResult = getNextOpponent({
@@ -91,16 +95,21 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
         opponents,
       });
       if (nextOpponentResult) {
-        const {nextOpponent, nextCell} = nextOpponentResult;
+        const { nextOpponent, nextCell } = nextOpponentResult;
         opponents.push(nextOpponent);
         currentCell = nextCell;
-        store.commit('incrementGenerationStepProgress');
+        store.commit("incrementGenerationStepProgress");
       }
 
       if (mustBreak) {
         clearTimeout(breakTimeoutHandle);
         clearInterval(checkCancelRequestIntervalHandle);
-        resolve();
+        resolve("timeout");
+        return;
+      } else if (cancelRequest) {
+        clearTimeout(breakTimeoutHandle);
+        clearInterval(checkCancelRequestIntervalHandle);
+        resolve("cancelled");
         return;
       } else if (opponents.length === opponentsCount) {
         clearTimeout(breakTimeoutHandle);
@@ -118,26 +127,26 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
 
 export function generatePosition(opponentsCount) {
   return new Promise((resolve, reject) => {
-    store.commit('setGenerationStepsCount', opponentsCount);
+    store.commit("setGenerationStepsCount", opponentsCount);
 
     const playerKnightPosition = generateCell();
-    generateOpponents(playerKnightPosition, opponentsCount).then(
-      (opponentsPieces) => {
+    generateOpponents(playerKnightPosition, opponentsCount)
+      .then((opponentsPieces) => {
+        if (opponentsPieces === "timeout" || opponentsPieces === "cancelled")
+          reject(opponentsPieces);
 
-        if (!opponentsPieces) reject();
-
-        store.commit('resetCancelGenerationFlag');
+        store.commit("resetCancelGenerationFlag");
 
         resolve({
           playerKnight: playerKnightPosition,
           opponentsPieces,
         });
-      }
-    ).catch((err) => {
-      store.commit('resetCancelGenerationFlag');
+      })
+      .catch((err) => {
+        store.commit("resetCancelGenerationFlag");
 
-      console.error(err);
-      reject()
-    });
+        console.error(err);
+        reject();
+      });
   });
 }
