@@ -48,7 +48,7 @@ export default {
   margin: 10px auto;
 }
 
-body {
+body, html {
   margin: 0;
 }
 
