@@ -7,6 +7,9 @@
       <button @click="showNewGameDialog" class="new_game">
         {{ t("main_page.new_game_button") }}
       </button>
+      <span id="ennemies_count" v-if="opponentPiecesCount > 0">
+        {{ opponentPiecesCount }} {{ t("main_page.opponent_pieces") }}
+      </span>
       <button @click="showGameRulesDialog" class="games_rules">
         {{ t("main_page.game_rules_button") }}
       </button>
@@ -43,6 +46,8 @@ export default {
     const { t } = useI18n();
     const store = useStore();
 
+    const opponentPiecesCount = ref(store.state.opponentPiecesCount);
+
     async function showNewGameDialog() {
       const opponentPiecesCount = await newGameDialog.value.show();
       if (opponentPiecesCount) {
@@ -66,6 +71,7 @@ export default {
     store.subscribe((mutation, state) => {
       generationSteps.value = state.generationStepsCount;
       generationStepProgress.value = state.generationStepProgress;
+      opponentPiecesCount.value = state.opponentPiecesCount;
     });
 
     return {
@@ -78,6 +84,7 @@ export default {
       cancelGameGeneration,
       generationSteps,
       generationStepProgress,
+      opponentPiecesCount,
       t,
     };
   },
@@ -138,6 +145,10 @@ button.cancel_generation {
   justify-content: space-around;
   align-items: center;
   width: 100%;
+}
+
+#ennemies_count {
+  font-size: 1.6rem;
 }
 
 .generation_zone {

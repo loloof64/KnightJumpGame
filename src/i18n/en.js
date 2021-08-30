@@ -7,6 +7,7 @@ export default {
     new_game_button: "New game",
     game_rules_button: "Rules",
     cancel_generation: "Cancel game generation",
+    opponent_pieces: "ennemies",
   },
   game_messages: {
     congratulation_alert: "Congratulations.",

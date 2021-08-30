@@ -11,7 +11,7 @@ function generateCell() {
   return { col, row };
 }
 
-function getFreeNeighbourCells({cell, playerKnightPosition, opponentPieces}) {
+function getFreeNeighbourCells({ cell, playerKnightPosition, opponentPieces }) {
   const directions = [
     { dx: -1, dy: -2 },
     { dx: -1, dy: +2 },
@@ -34,10 +34,13 @@ function getFreeNeighbourCells({cell, playerKnightPosition, opponentPieces}) {
     (item) => item.col >= 0 && item.col <= 7 && item.row >= 0 && item.row <= 7
   );
 
-  possibilities = possibilities.filter((item) =>
-    !(opponentPieces.find(
-      (opponent) => opponent.col === item.col && opponent.row === item.row
-    )) && (playerKnightPosition.col !== item.col || playerKnightPosition.row !== item.row)
+  possibilities = possibilities.filter(
+    (item) =>
+      !opponentPieces.find(
+        (opponent) => opponent.col === item.col && opponent.row === item.row
+      ) &&
+      (playerKnightPosition.col !== item.col ||
+        playerKnightPosition.row !== item.row)
   );
 
   return possibilities;
@@ -54,8 +57,16 @@ export const OPPONENTS_MIN_COUNT = 6;
 export const OPPONENTS_MAX_COUNT = 30;
 const TIMEOUT = 1000 * 60 * 2;
 
-function getNextOpponent({ currentCell, playerKnightPosition, opponentPieces }) {
-  const freeNeighbours = getFreeNeighbourCells({cell: currentCell, playerKnightPosition, opponentPieces});
+function getNextOpponent({
+  currentCell,
+  playerKnightPosition,
+  opponentPieces,
+}) {
+  const freeNeighbours = getFreeNeighbourCells({
+    cell: currentCell,
+    playerKnightPosition,
+    opponentPieces,
+  });
   if (freeNeighbours.length === 0) {
     return;
   }
@@ -100,7 +111,7 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
       const nextOpponentResult = getNextOpponent({
         currentCell,
         playerKnightPosition,
-        opponentPieces : opponents,
+        opponentPieces: opponents,
       });
       if (nextOpponentResult) {
         const { nextOpponent, nextCell } = nextOpponentResult;
@@ -136,6 +147,7 @@ function generateOpponents(playerKnightPosition, opponentsCount) {
 export function generatePosition(opponentsCount) {
   return new Promise((resolve, reject) => {
     store.commit("setGenerationStepsCount", opponentsCount);
+    store.commit("setOpponentPiecesCount", opponentsCount);
 
     const playerKnightPosition = generateCell();
     generateOpponents(playerKnightPosition, opponentsCount)

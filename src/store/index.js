@@ -6,6 +6,7 @@ const storeDefinition = {
         generationCancelRequest: false,
         generationStepsCount: 0,
         generationStepProgress: 0,
+        opponentPiecesCount: 0,
     };
   },
   mutations: {
@@ -21,6 +22,11 @@ const storeDefinition = {
     },
     incrementGenerationStepProgress(state) {
         state.generationStepProgress = state.generationStepProgress + 1;
+    },
+    setOpponentPiecesCount(state, payload) {
+      if (payload >= 0) {
+        state.opponentPiecesCount = payload;
+      }
     }
   },
 };
