@@ -75,18 +75,25 @@ export default {
     const gameActive = ref(store.state.gameActive);
     const answerData = ref(store.state.answerData);
 
-    const solutionControlsVisible = computed(() => answerData.value && !gameActive.value);
+    const solutionControlsVisible = computed(
+      () => answerData.value && !gameActive.value
+    );
 
     watch(answerIndex, () => board.value.updatePosition());
 
     store.subscribe((mutation, state) => {
-      generationSteps.value = state.generationStepsCount;
-      generationStepProgress.value = state.generationStepProgress;
-      opponentPiecesCount.value = state.opponentPiecesCount;
-      gameActive.value = state.gameActive;
-      answerData.value = state.answerData;
-
-      if (mutation.type === "setAnswerIndex") {
+      if (mutation.type === "setGenerationStepsCount") {
+        generationSteps.value = state.generationStepsCount;
+        generationStepProgress.value = state.generationStepProgress;
+      } else if (mutation.type === "incrementGenerationStepProgress") {
+        generationStepProgress.value = state.generationStepProgress;
+      } else if (mutation.type === "setOpponentPiecesCount") {
+        opponentPiecesCount.value = state.opponentPiecesCount;
+      } else if (mutation.type === "setGameActive") {
+        gameActive.value = state.gameActive;
+      } else if (mutation.type === "setAnswerData") {
+        answerData.value = state.answerData;
+      } else if (mutation.type === "setAnswerIndex") {
         answerIndex.value = state.answerIndex;
       }
     });
@@ -95,14 +102,14 @@ export default {
       if (gameActive.value) return;
       if (answerIndex.value === 0) return;
 
-      store.dispatch('setAnswerIndex', answerIndex.value - 1);
+      store.dispatch("setAnswerIndex", answerIndex.value - 1);
     }
 
     function goNextSolution() {
       if (gameActive.value) return;
       if (answerIndex.value >= store.state.opponentPiecesCount) return;
 
-      store.dispatch('setAnswerIndex', answerIndex.value + 1);
+      store.dispatch("setAnswerIndex", answerIndex.value + 1);
     }
 
     return {
