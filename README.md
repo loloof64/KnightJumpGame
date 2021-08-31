@@ -21,7 +21,7 @@ Chess vectors have been designed by CBurnett and downloaded from https://commons
 
 ### Publishing a release
 
-* edit package.json, and update fields version and release_message
-* edit tauri.conf.json and update field version
+* edit `tauri.conf.json` and update field `version` (top of configuration) 
+* edit `./github/workflows/build_artifacts.yml` and update field `releaseBody` (bottom of configuration)
 
 So that a Github Action will be able to publish a new release
