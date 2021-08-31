@@ -2,6 +2,7 @@
   "name": "knight-jump-game",
   "version": "0.1.0",
   "private": true,
+  "release_message": "First release",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
