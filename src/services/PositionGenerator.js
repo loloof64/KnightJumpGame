@@ -148,7 +148,7 @@ function generateAnswerDataFromGameData(gameData) {
   let answer = [];
   answer.push(gameData);
 
-  let playerPos = {...gameData.playerKnight};
+  let playerPos = { ...gameData.playerKnight };
   let opponents = [...gameData.opponentPieces];
 
   for (const currentOpponent of gameData.opponentPieces) {
@@ -167,13 +167,14 @@ function generateAnswerDataFromGameData(gameData) {
 export function generatePosition(opponentsCount) {
   return new Promise((resolve, reject) => {
     store.dispatch("setGenerationStepsCount", opponentsCount);
-    store.dispatch("setOpponentPiecesCount", opponentsCount);
 
     const playerKnightPosition = generateCell();
     generateOpponents(playerKnightPosition, opponentsCount)
       .then((opponentPieces) => {
-        if (opponentPieces === "timeout" || opponentPieces === "cancelled")
+        if (opponentPieces === "timeout" || opponentPieces === "cancelled") {
           reject(opponentPieces);
+          return;
+        }
 
         store.dispatch("resetCancelGenerationFlag");
 
@@ -184,6 +185,7 @@ export function generatePosition(opponentsCount) {
 
         const answerData = generateAnswerDataFromGameData(gameData);
 
+        store.dispatch("setOpponentPiecesCount", opponentsCount);
         store.dispatch("setAnswerData", answerData);
 
         resolve(gameData);
