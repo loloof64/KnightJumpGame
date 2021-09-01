@@ -3,6 +3,8 @@
 A simple game based on chess knight move.
 Try to eat all pieces in a row.
 
+Window users : you must accept the installation of `Microsoft Edge Webview Runtime` when requested !
+
 ## Credits
 
 ### Pictures
